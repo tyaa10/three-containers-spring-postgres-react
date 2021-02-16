@@ -1,0 +1,44 @@
+version: "3.1"
+
+services:
+  db:
+    container_name: db
+    image: dsr_db
+    restart: unless-stopped
+    build:
+      context: ./db/
+    ports:
+      - "5433:5432"
+    networks:
+      - dsr
+
+  api:
+    container_name: api
+    image: dsr_api
+    ports:
+      - "8090:8080"
+    volumes:
+      - ~/.m2:/root/.m2
+    build:
+      context: ./back/
+    networks:
+      - dsr
+    depends_on:
+      - db
+    command: ["./wait-for-it.sh", "dsr_db:5432", "--", "mvn", "spring-boot:run", "-X"]
+
+  frontend:
+    container_name: frontend
+    image: dsr_frontend
+    build:
+      context: ./front/
+    ports:
+      - "0.0.0.0:3000:3000"
+    networks:
+      - dsr
+    depends_on:
+      - api
+
+networks:
+  dsr:
+    driver: bridge
