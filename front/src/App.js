@@ -7,13 +7,16 @@ function App() {
     }).then(responseBody => setUsers(responseBody._embedded.users))
   })
   return (
-    <ul>
-      {
-        users.map(user => <li>
-          {user.forename} {user.surname} (e-mail: {user.email})
-        </li>)
-      }
-    </ul>
+      <>
+        <h1>Hello Postgres Spring React Docker-Compose!</h1>
+        <ul>
+          {
+            users.map(user => <li>
+              {user.forename} {user.surname} (e-mail: {user.email})
+            </li>)
+          }
+        </ul>
+      </>
   );
 }
 
